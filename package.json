@@ -1,0 +1,24 @@
+{
+  "name": "react-excel-node",
+  "version": "1.0.0",
+  "engines": {
+    "node": "10.x"
+  },
+  "scripts": {
+    "start": "node server",
+    "build": "cd react-ui/ && npm install && npm run build"
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "react-ui/node_modules"
+  ],
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "concurrently": "^4.1.1",
+    "excellentexport": "^3.4.0",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "nodemon": "^1.19.4",
+    "xlsx2json": "^1.0.0"
+  }
+}
