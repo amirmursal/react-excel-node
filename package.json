@@ -4,6 +4,7 @@
   "scripts": {
     "client": "cd react-ui/ && npm start",
     "start": "nodemon server/index.js",
+    "postinstall": "cd react-ui && npm install",
     "dev": "concurrently \"npm run client\" \"npm run start\""
   },
   "cacheDirectories": [
@@ -12,10 +13,12 @@
   ],
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cd": "^0.3.3",
     "concurrently": "^4.1.1",
     "express": "^4.17.1",
     "multer": "^1.4.2",
     "nodemon": "^1.19.4",
+    "react-ui": "file:react-ui",
     "xlsx2json": "^1.0.0"
   }
 }

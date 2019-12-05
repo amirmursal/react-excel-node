@@ -6,10 +6,27 @@ class App extends Component {
     super(props);
     this.state = {
       data: [],
-      filename: ""
+      file: "",
+      filename: "",
+      reportType: "Baptiste"
     };
   }
 
+  /**
+   * Handle report type change
+   * @param event
+   */
+  handleReportTypeChange = event => {
+    this.setState({
+      reportType: event.target.value
+    });
+  };
+
+  /**
+   * Handle file uplaod change
+   * Create filename with todays date attached
+   * @param event
+   */
   handleUploadFile = event => {
     if (
       !event ||
@@ -32,17 +49,41 @@ class App extends Component {
 
     const fileName = name.substring(0, lastDot) + " " + today;
 
+    this.setState({
+      file: event.target.files[0],
+      filename: fileName
+    });
+  };
+
+  /**
+   * Upload file to node api
+   * get json response as excel data
+   *
+   */
+  processFile = () => {
     const data = new FormData();
-    data.append("file", event.target.files[0]);
+    data.append("file", this.state.file);
     axios.post("/upload", data).then(response => {
       this.setState({
-        data: response.data,
-        filename: fileName
+        data: response.data
       });
     });
   };
 
-  renderData = () => {
+  /**
+   * Render smilelink report data
+   * TODO use existing table creation code
+   */
+  renderSmilelinkData = () => {
+    return <h1>SmilelinkData</h1>;
+  };
+
+  /**
+   * Render Baptiste report data
+   * into html table
+   *
+   */
+  renderBaptisteData = () => {
     let pname;
     return this.state.data.map((element, i) => {
       let previous = this.state.data[
@@ -70,12 +111,21 @@ class App extends Component {
             <td>{current.K}</td>
             <td>{current.L}</td>
             <td>{current.M}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
         );
       }
     });
   };
 
+  /**
+   * Export html table to formatted excel file
+   * @param table - id of HMTL table
+   * @param name - downloadble file name
+   */
   tableToExcel = (table, name) => {
     var tab_text = "<table border='2px'><tr bgcolor='#87AFC6'>";
     var j = 0;
@@ -128,51 +178,109 @@ class App extends Component {
 
         document.body.removeChild(a);
       } catch (e) {}
-
+    this.setState({
+      data: [],
+      file: "",
+      filename: "",
+      reportType: "Baptiste"
+    });
+    this.refs.file.value = "";
     return false;
   };
 
   render() {
-    const { data, filename } = this.state;
+    const { data, file, filename } = this.state;
+    const isBaptiste = data.length > 0 && this.state.reportType === "Baptiste";
+    const isSmileLink = this.state.reportType === "Smilelink";
     return (
-      <div>
-        <input type="file" onChange={this.handleUploadFile} />
-        <br /> <br />
-        {data.length > 0 && (
-          <div>
-            <input
-              type="button"
-              onClick={() => this.tableToExcel("table-to-xls", filename)}
-              value="Export to Excel"
-            />
-
-            <table id="table-to-xls">
-              <thead>
-                <tr>
-                  <th>Patient</th>
-                  <th>Subscriber</th>
-                  <th>Phone#</th>
-                  <th>Initial</th>
-                  <th>Previous Charge</th>
-                  <th>Charge Amount</th>
-                  <th>Total Balance</th>
-                  <th>Current Due</th>
-                  <th>This Month</th>
-                  <th>31-60 days</th>
-                  <th>61-90 days</th>
-                  <th>91+ days</th>
-                  <th>Last Payment</th>
-                  <th>Payment Date</th>
-                  <th>Ageing</th>
-                  <th>Last seen</th>
-                  <th>Next Appt</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>{this.renderData()}</tbody>
-            </table>
+      <div className="container-fluid">
+        <br />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-3">
+              <input
+                ref="file"
+                type="file"
+                className="form-control-file"
+                onChange={this.handleUploadFile}
+              />
+            </div>
+            <div className="col-md-3">
+              <select
+                className="form-control"
+                value={this.state.reportType}
+                onChange={this.handleReportTypeChange}
+              >
+                <option value="Baptiste">Baptiste</option>
+                <option value="Smilelink">Smilelink</option>
+                <option value="Dolphin">Dolphin</option>
+                <option value="Ortho2Ege">Ortho2Ege</option>
+                <option value="Cloud 9">Cloud 9</option>
+              </select>
+            </div>
+            {file && (
+              <div className="col-md-3">
+                <button
+                  className="form-control btn btn-primary"
+                  onClick={this.processFile}
+                >
+                  {" "}
+                  Process File
+                </button>
+              </div>
+            )}
+            {data.length > 0 && (
+              <div className="col-md-3">
+                <button
+                  className="form-control btn btn-success"
+                  onClick={() => this.tableToExcel("table-to-xls", filename)}
+                >
+                  Export to Excel
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+
+        <br />
+        <div>
+          {isBaptiste && (
+            <div className="container-fluid">
+              <table
+                className="table table-bordered table-sm"
+                id="table-to-xls"
+              >
+                <thead className="thead-light">
+                  <tr>
+                    <th>Patient</th>
+                    <th>Subscriber</th>
+                    <th>Phone#</th>
+                    <th>Initial</th>
+                    <th>Previous Charge</th>
+                    <th>Charge Amount</th>
+                    <th>Total Balance</th>
+                    <th>Current Due</th>
+                    <th>This Month</th>
+                    <th>31-60 days</th>
+                    <th>61-90 days</th>
+                    <th>91+ days</th>
+                    <th>Last Payment</th>
+                    <th>Payment Date</th>
+                    <th>Ageing</th>
+                    <th>Last seen</th>
+                    <th>Next Appt</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>{this.renderBaptisteData()}</tbody>
+              </table>
+            </div>
+          )}
+
+          {isSmileLink && (
+            <React.Fragment>load smilelink data here</React.Fragment>
+          )}
+        </div>
       </div>
     );
   }
