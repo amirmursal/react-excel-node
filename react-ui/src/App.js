@@ -91,7 +91,7 @@ class App extends Component {
       ];
       let current = this.state.data[i];
       let next = this.state.data[i + 1];
-      if (element.A !== "" && next.A !== "") {
+      if (element.A !== "" && next && next.A !== "") {
         if (previous.A === "") {
           pname = current.A;
         }
