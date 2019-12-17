@@ -8,7 +8,8 @@ class App extends Component {
       data: [],
       file: "",
       filename: "",
-      reportType: "Baptiste"
+      reportType: "Baptiste",
+      loading: false
     };
   }
 
@@ -63,25 +64,114 @@ class App extends Component {
   processFile = () => {
     const data = new FormData();
     data.append("file", this.state.file);
+    this.setState({
+      loading: true
+    });
     axios.post("/upload", data).then(response => {
       this.setState({
-        data: response.data
+        data: response.data,
+        loading: false
       });
     });
   };
 
   /**
-   * Render smilelink report data
-   * TODO use existing table creation code
+   * Render Cloud9 report data
    */
-  renderSmilelinkData = () => {
-    return <h1>SmilelinkData</h1>;
+
+  renderCloud9Data = () => {
+    return this.state.data.map((element, i) => {
+      if (element.A !== "" && i > 7) {
+        let current = this.state.data[i + 2];
+        return (
+          <tr key={i}>
+            <td>{element.A}</td>
+            <td>{current.B}</td>
+            <td>{element.H}</td>
+            <td>{current.O}</td>
+            <td>{current.P}</td>
+            <td>{current.R}</td>
+            <td>{current.T}</td>
+            <td>{current.U}</td>
+            <td>{current.W}</td>
+            <td>{current.X}</td>
+            <td>{current.Y}</td>
+            <td>{current.Z}</td>
+          </tr>
+        );
+      }
+    });
+  };
+
+  /**
+   * Render Ortho2Ege report Data
+   */
+  renderOrtho2EgeData = () => {
+    return this.state.data.map((element, i) => {
+      if (element.A !== "" && i > 7 && element.B !== "") {
+        return (
+          <tr key={i}>
+            <td>{element.A}</td>
+            <td>{element.B}</td>
+            <td>{element.C}</td>
+            <td>{element.E}</td>
+            <td>{element.F}</td>
+            <td>{element.G}</td>
+            <td>{element.H}</td>
+            <td>{element.I}</td>
+            <td>{element.J}</td>
+            <td>{element.K}</td>
+            <td>{element.M}</td>
+            <td>{element.O}</td>
+            <td>{element.Q}</td>
+            <td>{element.R}</td>
+          </tr>
+        );
+      }
+    });
+  };
+
+  /**
+   * Render Dolphin report data
+   */
+  renderDolphinData = () => {
+    let locationName;
+    return this.state.data.map((element, i) => {
+      if (element.G !== "" && element.A === "") {
+        locationName = element.G;
+      }
+      if (
+        element.A !== "" &&
+        i > 9 &&
+        element.A !== "Pat ID" &&
+        locationName !== element.A &&
+        element.H !== ""
+      ) {
+        return (
+          <tr key={i}>
+            <td>{locationName}</td>
+            <td>{element.A}</td>
+            <td>{element.D}</td>
+            <td>{element.H}</td>
+            <td>{element.M}</td>
+            <td>{element.N}</td>
+            <td>{element.P}</td>
+            <td>{element.Q}</td>
+            <td>{element.R}</td>
+            <td>{element.S}</td>
+            <td>{element.T}</td>
+            <td>{element.U}</td>
+            <td>{element.X}</td>
+            <td>{element.AA}</td>
+            <td>{element.AC}</td>
+          </tr>
+        );
+      }
+    });
   };
 
   /**
    * Render Baptiste report data
-   * into html table
-   *
    */
   renderBaptisteData = () => {
     let pname;
@@ -189,9 +279,12 @@ class App extends Component {
   };
 
   render() {
-    const { data, file, filename } = this.state;
+    const { data, file, filename, loading } = this.state;
     const isBaptiste = data.length > 0 && this.state.reportType === "Baptiste";
-    const isSmileLink = this.state.reportType === "Smilelink";
+    const isDolphin = data.length > 0 && this.state.reportType === "Dolphin";
+    const isOrtho2Ege =
+      data.length > 0 && this.state.reportType === "Ortho2Ege";
+    const isCloud9 = data.length > 0 && this.state.reportType === "Cloud9";
     return (
       <div className="container-fluid">
         <br />
@@ -212,10 +305,10 @@ class App extends Component {
                 onChange={this.handleReportTypeChange}
               >
                 <option value="Baptiste">Baptiste</option>
-                <option value="Smilelink">Smilelink</option>
                 <option value="Dolphin">Dolphin</option>
                 <option value="Ortho2Ege">Ortho2Ege</option>
-                <option value="Cloud 9">Cloud 9</option>
+                <option value="Cloud9">Cloud 9</option>
+                <option value="Smilelink">Smilelink</option>
               </select>
             </div>
             {file && (
@@ -224,7 +317,13 @@ class App extends Component {
                   className="form-control btn btn-primary"
                   onClick={this.processFile}
                 >
-                  {" "}
+                  {loading && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}{" "}
                   Process File
                 </button>
               </div>
@@ -277,8 +376,90 @@ class App extends Component {
             </div>
           )}
 
-          {isSmileLink && (
-            <React.Fragment>load smilelink data here</React.Fragment>
+          {isDolphin && (
+            <div className="container-fluid">
+              <table
+                className="table table-bordered table-sm"
+                id="table-to-xls"
+              >
+                <thead className="thead-light">
+                  <tr>
+                    <th>Location</th>
+                    <th>Pat ID</th>
+                    <th>Billing Party</th>
+                    <th>Patient</th>
+                    <th>Current</th>
+                    <th>Over 30</th>
+                    <th>Over 60</th>
+                    <th>Over 90</th>
+                    <th>Past Due</th>
+                    <th>Total Due</th>
+                    <th>Unbilled</th>
+                    <th>Acct Bal</th>
+                    <th>Amt</th>
+                    <th>Date</th>
+                    <th>Chg</th>
+                  </tr>
+                </thead>
+                <tbody>{this.renderDolphinData()}</tbody>
+              </table>
+            </div>
+          )}
+
+          {isOrtho2Ege && (
+            <div className="container-fluid">
+              <table
+                className="table table-bordered table-sm"
+                id="table-to-xls"
+              >
+                <thead className="thead-light">
+                  <tr>
+                    <th>Patient</th>
+                    <th>Sts</th>
+                    <th>Responsible Party</th>
+                    <th>Home Ph</th>
+                    <th>Work Ph</th>
+                    <th>Amt Due</th>
+                    <th>0-30</th>
+                    <th>31-60</th>
+                    <th>61-90</th>
+                    <th>91+</th>
+                    <th>Days</th>
+                    <th>Balance</th>
+                    <th>Last Amt</th>
+                    <th>Received</th>
+                  </tr>
+                </thead>
+                <tbody>{this.renderOrtho2EgeData()}</tbody>
+              </table>
+            </div>
+          )}
+
+          {isCloud9 && (
+            <div className="container-fluid">
+              <table
+                className="table table-bordered table-sm"
+                id="table-to-xls"
+              >
+                <thead className="thead-light">
+                  <tr>
+                    <th>Patient</th>
+                    <th>Subscriber</th>
+                    <th>Contact Info</th>
+                    <th>Last Pay. Date</th>
+                    <th>Last Pay. Amt.</th>
+                    <th>> 10</th>
+                    <th>0-30</th>
+                    <th>31-60</th>
+                    <th>61-90</th>
+                    <th>> 90</th>
+                    <th>Due Now</th>
+                    <th>Total Due</th>
+                  </tr>
+                </thead>
+                <tbody>{this.renderCloud9Data()}</tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

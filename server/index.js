@@ -32,7 +32,7 @@ var upload = multer({
   fileFilter: function(req, file, callback) {
     //file filter
     if (
-      ["xls", "xlsx"].indexOf(
+      ["xlsx"].indexOf(
         file.originalname.split(".")[file.originalname.split(".").length - 1]
       ) === -1
     ) {
