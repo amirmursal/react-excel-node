@@ -171,6 +171,32 @@ class App extends Component {
   };
 
   /**
+   * Render render Smilelink report data
+   */
+  renderSmilelinkData = () => {
+    return this.state.data.map((element, i) => {
+      if (i > 4 && element.B === "Post Dated Sum:") {
+        let previous = this.state.data[
+          i === 0 ? this.state.data.length - 1 : i - 1
+        ];
+        let current = this.state.data[i];
+        return (
+          <tr key={i}>
+            <td>{previous.A}</td>
+            <td>{current.G}</td>
+            <td>{previous.J}</td>
+            <td>{current.Q}</td>
+            <td>{current.V}</td>
+            <td>{current.AA}</td>
+            <td>{current.AE}</td>
+            <td>{current.AJ}</td>
+            <td>{current.AM}</td>
+          </tr>
+        );
+      }
+    });
+  };
+  /**
    * Render Baptiste report data
    */
   renderBaptisteData = () => {
@@ -285,6 +311,8 @@ class App extends Component {
     const isOrtho2Ege =
       data.length > 0 && this.state.reportType === "Ortho2Ege";
     const isCloud9 = data.length > 0 && this.state.reportType === "Cloud9";
+    const isSmilelink =
+      data.length > 0 && this.state.reportType === "Smilelink";
     return (
       <div className="container-fluid">
         <br />
@@ -458,6 +486,30 @@ class App extends Component {
                   </tr>
                 </thead>
                 <tbody>{this.renderCloud9Data()}</tbody>
+              </table>
+            </div>
+          )}
+
+          {isSmilelink && (
+            <div className="container-fluid">
+              <table
+                className="table table-bordered table-sm"
+                id="table-to-xls"
+              >
+                <thead className="thead-light">
+                  <tr>
+                    <th>Billing party</th>
+                    <th>0</th>
+                    <th>Patient #</th>
+                    <th>Due Now</th>
+                    <th>Current</th>
+                    <th>30 Days</th>
+                    <th>60 Days</th>
+                    <th>90 Days</th>
+                    <th>120 Days</th>
+                  </tr>
+                </thead>
+                <tbody>{this.renderSmilelinkData()}</tbody>
               </table>
             </div>
           )}
