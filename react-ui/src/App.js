@@ -8,7 +8,7 @@ class App extends Component {
       data: [],
       file: "",
       filename: "",
-      reportType: "Baptiste",
+      reportType: "Cloud9",
       loading: false
     };
   }
@@ -76,27 +76,41 @@ class App extends Component {
   };
 
   /**
-   * Render Cloud9 report data
+   * Render Orthotrac report data
    */
-
-  renderCloud9Data = () => {
+  renderOrthotracData = () => {
+    let pname;
     return this.state.data.map((element, i) => {
-      if (element.A !== "" && i > 7) {
-        let current = this.state.data[i + 2];
+      let previous = this.state.data[
+        i === 0 ? this.state.data.length - 1 : i - 1
+      ];
+      let current = this.state.data[i];
+      let next = this.state.data[i + 1];
+      if (element.A !== "" && next && next.A !== "") {
+        if (previous.A === "") {
+          pname = current.A;
+        }
         return (
           <tr key={i}>
-            <td>{element.A}</td>
+            <td>{pname}</td>
+            <td>{next.A}</td>
+            <td>{next.B}</td>
             <td>{current.B}</td>
-            <td>{element.H}</td>
-            <td>{current.O}</td>
-            <td>{current.P}</td>
-            <td>{current.R}</td>
-            <td>{current.T}</td>
-            <td>{current.U}</td>
-            <td>{current.W}</td>
-            <td>{current.X}</td>
-            <td>{current.Y}</td>
-            <td>{current.Z}</td>
+            <td>{next.C}</td>
+            <td>{next.D}</td>
+            <td>{next.E}</td>
+            <td>{next.F}</td>
+            <td>{next.G}</td>
+            <td>{next.H}</td>
+            <td>{next.I}</td>
+            <td>{next.J}</td>
+            <td>{next.K}</td>
+            <td>{next.L}</td>
+            <td>{next.M}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
         );
       }
@@ -196,10 +210,11 @@ class App extends Component {
       }
     });
   };
+
   /**
-   * Render Baptiste report data
+   * Render Cloud9 report data
    */
-  renderBaptisteData = () => {
+  renderCloud9Data = () => {
     let pname;
     return this.state.data.map((element, i) => {
       let previous = this.state.data[
@@ -306,7 +321,8 @@ class App extends Component {
 
   render() {
     const { data, file, filename, loading } = this.state;
-    const isBaptiste = data.length > 0 && this.state.reportType === "Baptiste";
+    const isOrthotrac =
+      data.length > 0 && this.state.reportType === "Orthotrac";
     const isDolphin = data.length > 0 && this.state.reportType === "Dolphin";
     const isOrtho2Ege =
       data.length > 0 && this.state.reportType === "Ortho2Ege";
@@ -332,10 +348,10 @@ class App extends Component {
                 value={this.state.reportType}
                 onChange={this.handleReportTypeChange}
               >
-                <option value="Baptiste">Baptiste</option>
+                <option value="Orthotrac">Orthotrac</option>
+                <option value="Cloud9">Cloud 9</option>
                 <option value="Dolphin">Dolphin</option>
                 <option value="Ortho2Ege">Ortho2Ege</option>
-                <option value="Cloud9">Cloud 9</option>
                 <option value="Smilelink">Smilelink</option>
               </select>
             </div>
@@ -371,7 +387,7 @@ class App extends Component {
 
         <br />
         <div>
-          {isBaptiste && (
+          {isCloud9 && (
             <div className="container-fluid">
               <table
                 className="table table-bordered table-sm"
@@ -399,7 +415,7 @@ class App extends Component {
                     <th>Status</th>
                   </tr>
                 </thead>
-                <tbody>{this.renderBaptisteData()}</tbody>
+                <tbody>{this.renderCloud9Data()}</tbody>
               </table>
             </div>
           )}
@@ -463,7 +479,7 @@ class App extends Component {
             </div>
           )}
 
-          {isCloud9 && (
+          {isOrthotrac && (
             <div className="container-fluid">
               <table
                 className="table table-bordered table-sm"
@@ -473,19 +489,26 @@ class App extends Component {
                   <tr>
                     <th>Patient</th>
                     <th>Subscriber</th>
-                    <th>Contact Info</th>
-                    <th>Last Pay. Date</th>
-                    <th>Last Pay. Amt.</th>
-                    <th>> 10</th>
-                    <th>0-30</th>
-                    <th>31-60</th>
-                    <th>61-90</th>
-                    <th>> 90</th>
-                    <th>Due Now</th>
-                    <th>Total Due</th>
+                    <th>#</th>
+                    <th>Phone#</th>
+                    <th>Initial</th>
+                    <th>Previous Charge</th>
+                    <th>Charge Amount</th>
+                    <th>Total Balance</th>
+                    <th>Current Due</th>
+                    <th>This Month</th>
+                    <th>31-60 days</th>
+                    <th>61-90 days</th>
+                    <th>91+ days</th>
+                    <th>Last Payment</th>
+                    <th>Payment Date</th>
+                    <th>Ageing</th>
+                    <th>Last seen</th>
+                    <th>Next Appt</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
-                <tbody>{this.renderCloud9Data()}</tbody>
+                <tbody>{this.renderOrthotracData()}</tbody>
               </table>
             </div>
           )}
