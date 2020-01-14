@@ -313,7 +313,7 @@ class App extends Component {
       data: [],
       file: "",
       filename: "",
-      reportType: "Baptiste"
+      reportType: "Cloud9"
     });
     this.refs.file.value = "";
     return false;
@@ -487,8 +487,8 @@ class App extends Component {
               >
                 <thead className="thead-light">
                   <tr>
-                    <th>Patient</th>
                     <th>Subscriber</th>
+                    <th>Patient</th>
                     <th>#</th>
                     <th>Phone#</th>
                     <th>Initial</th>
