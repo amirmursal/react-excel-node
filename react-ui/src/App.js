@@ -215,7 +215,36 @@ class App extends Component {
    * Render Cloud9 report data
    */
   renderCloud9Data = () => {
+    return this.state.data.map((element, i) => {
+      if (element.A !== "" && i > 7) {
+        let current = this.state.data[i + 2];
+        return (
+          <tr key={i}>
+            <td>{element.A}</td>
+            <td>{current.B}</td>
+            <td>{element.H}</td>
+            <td>{current.O}</td>
+            <td>{current.P}</td>
+            <td>{current.R}</td>
+            <td>{current.T}</td>
+            <td>{current.U}</td>
+            <td>{current.W}</td>
+            <td>{current.X}</td>
+            <td>{current.Y}</td>
+            <td>{current.Z}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        );
+      }
+    });
+
+    /* Old Baptise code start
+      
     let pname;
+    console.table(this.state.data);
     return this.state.data.map((element, i) => {
       let previous = this.state.data[
         i === 0 ? this.state.data.length - 1 : i - 1
@@ -250,6 +279,40 @@ class App extends Component {
         );
       }
     });
+    
+    {isCloud9 && (
+            <div className="container-fluid">
+              <table
+                className="table table-bordered table-sm"
+                id="table-to-xls"
+              >
+                <thead className="thead-light">
+                    <tr>
+                    <th>Patient</th>
+                    <th>Subscriber</th>
+                    <th>Phone#</th>
+                    <th>Initial</th>
+                    <th>Previous Charge</th>
+                    <th>Charge Amount</th>
+                    <th>Total Balance</th>
+                    <th>Current Due</th>
+                    <th>This Month</th>
+                    <th>31-60 days</th>
+                    <th>61-90 days</th>
+                    <th>91+ days</th>
+                    <th>Last Payment</th>
+                    <th>Payment Date</th>
+                    <th>Ageing</th>
+                    <th>Last seen</th>
+                    <th>Next Appt</th>
+                    <th>Status</th>
+                  </tr>              
+                </thead>
+                <tbody>{this.renderCloud9Data()}</tbody>
+              </table>
+            </div>
+          )}
+     Old Baptise code ends */
   };
 
   /**
@@ -397,18 +460,16 @@ class App extends Component {
                   <tr>
                     <th>Patient</th>
                     <th>Subscriber</th>
-                    <th>Phone#</th>
-                    <th>Initial</th>
-                    <th>Previous Charge</th>
-                    <th>Charge Amount</th>
-                    <th>Total Balance</th>
-                    <th>Current Due</th>
-                    <th>This Month</th>
-                    <th>31-60 days</th>
-                    <th>61-90 days</th>
-                    <th>91+ days</th>
-                    <th>Last Payment</th>
-                    <th>Payment Date</th>
+                    <th>Contact Info</th>
+                    <th>Last Pay. Date</th>
+                    <th>Last Pay. Amt.</th>
+                    <th>> 10</th>
+                    <th>0-30</th>
+                    <th>31-60</th>
+                    <th>61-90</th>
+                    <th>> 90</th>
+                    <th>Due Now</th>
+                    <th>Total Due</th>
                     <th>Ageing</th>
                     <th>Last seen</th>
                     <th>Next Appt</th>
